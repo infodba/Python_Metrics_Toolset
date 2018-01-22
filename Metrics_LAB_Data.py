@@ -1,9 +1,6 @@
 import glob
 import  re
-import datetime
 from plotly import tools
-#from plotly import graph_objs as go
-#import plotly.plotly as py
 import plotly.graph_objs as go
 from plotly.offline import plot as py
 
@@ -44,6 +41,23 @@ def findresults(record, activity):
     print(results_dict)
     return results_dict
 
+def tracefactory(activity_dict):
+    x_data = []
+    y_data = []
+    for key in sorted(activity_dict):
+        # print(key + ' |Value=| ' + (login_dict[key]))
+        x_data.append(key)
+        y_data.append(activity_dict[key])
+    trace = go.Scatter(x=x_data, y=y_data)
+    return trace
+
+def findaverage(activity_dict):
+    if len(activity_dict) > 0:
+        value = sum(activity_dict.values())/len(activity_dict)
+        stringvalue = "{0:.2f}".format(value)
+
+    return stringvalue
+
 print('START')
 file_list = glob.glob(RFOLDER_PATH + FILE_EXTENSION)
 #file_list.reverse()
@@ -52,12 +66,19 @@ file_counter = 0
 login_dict = {}
 openfolder_dict = {}
 remotesearch_dict = {}
-login_x = []
-login_y = []
-openfolder_x = []
-openfolder_y = []
-remotesearch_x = []
-remotesearch_y = []
+freezeworkflow_dict = {}
+tcrevise_dict = {}
+freezeworkflowpublished_dict = {}
+loadintvvis_dict = {}
+createecn_dict = {}
+wherereferenced_dict = {}
+whereused_dict = {}
+changegroup_dict = {}
+localsearch_dict = {}
+openinsm_dict = {}
+revisionrule_dict = {}
+loadincatia_dict = {}
+
 
 
 for file in file_list:
@@ -71,49 +92,52 @@ for file in file_list:
             login_dict.update(findresults(line,'Login'))
             openfolder_dict.update(findresults(line,'OpenFolder'))
             remotesearch_dict.update(findresults(line,'RemoteSearch'))
-            '''login_x.append(findxdata(line,'Login'))
-            login_y.append(findydata(line,'Login'))
-            openfolder_x.append(findxdata(line,'OpenFolder'))
-            openfolder_y.append(findydata(line,'OpenFolder'))
+            freezeworkflow_dict.update(findresults(line,'FreezeWorkflow'))
+            tcrevise_dict.update(findresults(line,'TcRevise'))
+            freezeworkflowpublished_dict.update(findresults(line,'FreezeWorkflowPublished'))
+            loadintvvis_dict.update(findresults(line,'LoadInTCVis'))
+            createecn_dict.update(findresults(line,'CreateECN'))
+            wherereferenced_dict.update(findresults(line,'WhereReferenced'))
+            whereused_dict.update(findresults(line,'WhereUsed'))
+            changegroup_dict.update(findresults(line,'ChangeGroup'))
+            localsearch_dict.update(findresults(line,'LocalSearch'))
+            openinsm_dict.update(findresults(line,'OpenInSM'))
+            revisionrule_dict.update(findresults(line,'RevisionRule'))
+            loadincatia_dict.update(findresults(line,'LoadInCatia'))
 
+fig = tools.make_subplots(rows=5, cols=3,
+                          subplot_titles=('Login, Avg='+findaverage(login_dict)+' sec',
+                                          'OpenFolder, Avg='+findaverage(openfolder_dict)+' sec',
+                                          'RemoteSearch, Avg='+findaverage(remotesearch_dict)+' sec',
+                                          'FreezeWorkflow, Avg='+findaverage(freezeworkflow_dict)+' sec',
+                                          'TcRevise, Avg='+findaverage(tcrevise_dict)+' sec',
+                                          'FreezeWorkflowPublished, Avg='+findaverage(freezeworkflowpublished_dict)+' sec',
+                                          'LoadInTCVis, Avg='+findaverage(loadintvvis_dict)+' sec',
+                                          'CreateECN, Avg='+findaverage(createecn_dict)+' sec',
+                                          'WhereReferenced, Avg='+findaverage(wherereferenced_dict)+' sec',
+                                          'WhereUsed, Avg='+findaverage(whereused_dict)+' sec',
+                                          'ChangeGroup, Avg='+findaverage(changegroup_dict)+' sec',
+                                          'LocalSearch, Avg='+findaverage(localsearch_dict)+' sec',
+                                          'OpenInSM, Avg='+findaverage(openinsm_dict)+' sec',
+                                          'RevisionRule, Avg='+findaverage(revisionrule_dict)+' sec',
+                                          'LoadInCatia, Avg='+findaverage(loadincatia_dict)+' sec'))
 
-print(login_x)
-print(login_y)
-print('OpenFolder')
-print(openfolder_x)
-print(openfolder_y)'''
-print('Login')
-print(login_dict)
-print('OpenFolder')
-print(openfolder_dict)
+fig.append_trace(tracefactory(login_dict), 1, 1)
+fig.append_trace(tracefactory(openfolder_dict), 1, 2)
+fig.append_trace(tracefactory(remotesearch_dict), 1, 3)
+fig.append_trace(tracefactory(freezeworkflow_dict), 2, 1)
+fig.append_trace(tracefactory(tcrevise_dict), 2, 2)
+fig.append_trace(tracefactory(freezeworkflowpublished_dict), 2, 3)
+fig.append_trace(tracefactory(loadintvvis_dict), 3, 1)
+fig.append_trace(tracefactory(createecn_dict), 3, 2)
+fig.append_trace(tracefactory(wherereferenced_dict), 3, 3)
+fig.append_trace(tracefactory(whereused_dict), 4, 1)
+fig.append_trace(tracefactory(changegroup_dict), 4, 2)
+fig.append_trace(tracefactory(localsearch_dict), 4, 3)
+fig.append_trace(tracefactory(openinsm_dict), 5, 1)
+fig.append_trace(tracefactory(revisionrule_dict), 5, 2)
+fig.append_trace(tracefactory(loadincatia_dict), 5, 3)
 
-for key in sorted(login_dict):
-    #print(key + ' |Value=| ' + (login_dict[key]))
-    login_x.append(key)
-    login_y.append(login_dict[key])
-for key in sorted(openfolder_dict):
-    #print(key + ' |Value=| ' + (login_dict[key]))
-    openfolder_x.append(key)
-    openfolder_y.append(openfolder_dict[key])
-for key in sorted(remotesearch_dict):
-    #print(key + ' |Value=| ' + (login_dict[key]))
-    remotesearch_x.append(key)
-    remotesearch_y.append(remotesearch_dict[key])
+fig['layout'].update(height=1024, width=1900, title='4T FNA2FNA LAB PC Metrics Results')
 
-#trace1 = go.Scatter(x=[1, 2, 3], y=[4, 5, 6])
-trace1 = go.Scatter(x=login_x, y=login_y)
-trace2 = go.Scatter(x=openfolder_x, y=openfolder_y)
-trace3 = go.Scatter(x=remotesearch_x, y=remotesearch_y)
-trace4 = go.Scatter(x=[4000, 5000, 6000], y=[7000, 8000, 9000])
-
-fig = tools.make_subplots(rows=2, cols=3, subplot_titles=('Login', 'OpenFolder',
-                                                          'RemoteSearch', 'FreezeWorkflow'))
-
-fig.append_trace(trace1, 1, 1)
-fig.append_trace(trace2, 1, 2)
-fig.append_trace(trace3, 1, 3)
-fig.append_trace(trace4, 2, 1)
-
-fig['layout'].update(height=600, width=1900, title='4T Metrics Results')
-
-py(fig, filename='make-subplots-multiple-with-titles.html')
+py(fig, filename='FNA_lab_metrics_results.html')
